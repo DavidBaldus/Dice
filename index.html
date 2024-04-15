@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Dice Roller</title>
+    <style>
+        #dice {
+            width: 100px;  /* Adjust size as needed */
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s; /* Smooth transition for rotation */
+        }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: white; /* Default face color */
+            border: 1px solid #ccc; /* Border to distinguish faces */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px; /* Adjust text size as needed */
+        }
+
+        /* Styles for the individual faces - ensuring correct positioning */
+        .front { transform: translateZ(50px); }
+        .back { transform: rotateY(180deg) translateZ(50px); }
+        .right { transform: rotateY(90deg) translateZ(50px); }
+        .left { transform: rotateY(-90deg) translateZ(50px); }
+        .top { transform: rotateX(90deg) translateZ(50px); }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        .active {
+            background-color: green; /* Highlight the active face */
+        }
+    </style>
+</head>
+<body>
+    <div id="dice">
+        <div class="face front">Face 1</div>
+        <div class="face back">Face 2</div>
+        <div class="face right">Face 3</div>
+        <div class="face left">Face 4</div>
+        <div class="face top">Face 5</div>
+        <div class="face bottom">Face 6</div>
+    </div>
+    <button id="roll-button">Tap to Roll</button>
+
+    <script>
+        document.getElementById('roll-button').addEventListener('click', function() {
+            var dice = document.getElementById('dice');
+            var faces = document.querySelectorAll('.face');
+            var randomNum = Math.floor(Math.random() * 6);
+
+            // Clearing the active class from all faces to reset the state
+            faces.forEach(face => face.classList.remove('active'));
+
+            // Explicit rotations for each face
+            var rotations = [
+                { transform: 'rotateX(0deg) rotateY(0deg)' },      // Front face
+                { transform: 'rotateX(-180deg) rotateY(0deg)' },   // Back face
+                { transform: 'rotateX(0deg) rotateY(90deg)' },     // Right face
+                { transform: 'rotateX(0deg) rotateY(-90deg)' },    // Left face
+                { transform: 'rotateX(-90deg) rotateY(0deg)' },    // Top face
+                { transform: 'rotateX(90deg) rotateY(0deg)' }      // Bottom face
+            ];
+
+            // Apply rotation
+            dice.style.transform = rotations[randomNum].transform;
+
+            // After the animation ends, highlight the active face
+            setTimeout(() => {
+                var activeFaceClass = ['front', 'back', 'right', 'left', 'top', 'bottom'][randomNum];
+                var activeFace = document.querySelector(`.${activeFaceClass}`);
+                activeFace.classList.add('active');
+            }, 1050); // Adjust according to your transition time in CSS
+
+            // Disable the button after the roll
+            this.disabled = true;
+        });
+    </script>
+</body>
+</html>
